@@ -1,0 +1,37 @@
+*{
+    box-sizing:border-box;
+}
+body{
+    font-family: 'AR One Sans', sans-serif;
+    font-family: 'Nunito', sans-serif;
+    background-color: #edf551;
+    position: relative;
+}
+circle{
+    opacity: 0.8;
+}
+
+#container{
+    position: absolute;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, 0);
+    max-width: 1200px;
+    margin: 20px 40px;
+    
+}
+.flex-container{
+    display: flex;
+    flex-direction: row;
+    align-content: flex-end;
+    justify-content: space-around;
+}
+#desc-box{
+    padding: 20px;
+    border: 2px solid black;
+}
+#notice-box{
+    border: 2px solid black;
+    margin-top: 20px;
+    padding: 10px;
+}

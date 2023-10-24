@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>110550140.html</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="110550140.css">
+        <script src="https://d3js.org/d3.v6.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="vis-box"></div>
+            <h1>Click switch button  to switch graph</h1>
+        </div>
+        <button class="btn" id="graph-switch">switch</button>
+        <script type="module">
+            function generate_ScatterPlot(){
+                const DATA_PATH = "abalone.data";
+
+                const margin = {top: 10, right: 10, bottom: 10, left: 10};
+                const size = 640;
+
+                const svg = d3.select('#vis-box')
+                    .append("svg")
+                        .attr("width", size)
+                        .attr("height", size)
+                    .append("g")
+                        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+                d3.text("http://vis.lab.djosix.com:2023/data/abalone.data").then(function(rawData){
+                    const header = "Gender,Length,Diameter,Height,WholeWeight,ShuckedWeight,VisceraWeight,ShellWeight,Rings";
+                    const dataWithHeader = header + '\n' + rawData;
+                    const data = d3.csvParse(dataWithHeader);
+
+                    // extract numerical data from the dataset
+                    const num_attribs = ["Length", "Diameter", "Height", "WholeWeight", "ShuckedWeight", "VisceraWeight", "ShellWeight", "Rings"];
+                    // size of a single graph
+                    const gap = 20;
+                    const graphSize = size/num_attribs.length;
+                    // scalers
+                    const genderValues = [...new Set(data.map(d => d.Gender))];
+                    const colorScale = d3.scaleOrdinal()
+                        .domain(genderValues)
+                        .range(["#1f77b4", "#ff7f0e", "rgb(111, 33, 184)"]);
+                    const coordScale = d3.scalePoint()
+                        .domain(num_attribs)
+                        .range([0, size - graphSize]);
+
+                    // add correlogram
+
+                    // add scatter plots
+                    for(let i in num_attribs){
+                        for(let j in num_attribs){
+                            const a1 = num_attribs[i], a2 = num_attribs[j];
+                            const xAxis = d3.scaleLinear()
+                                .domain(d3.extent(data, function(d){return +d[a1]})).nice()
+                                .range([0, graphSize - 2*gap]);
+                            // Y-axis of scatter plot
+                            const yAxis = d3.scaleLinear()
+                                .domain(d3.extent(data, function(d){return +d[a2]})).nice()
+                                .range([graphSize - 2*gap, 0]);
+                            if(a1 == a2){
+                                // Place a label on the diagonal
+                                svg.append('text')
+                                    .attr('x', coordScale(a1) + graphSize / 2)
+                                    .attr('y', coordScale(a2) + graphSize / 2)
+                                    .attr('text-anchor', 'middle')
+                                    .attr('alignment-baseline', 'middle')
+                                    .style('font-size', `${10}px`)
+                                    .text(a1);
+
+                            }else{
+                                
+                                const g = svg  
+                                    .append('g')
+                                    .attr("transform", `translate(${coordScale(a1)+gap}, ${coordScale(a2)+gap})`);
+                                g.append('g')
+                                    .attr('transform', `translate(0, ${graphSize - gap*2})`)
+                                    .call(d3.axisBottom(xAxis).ticks(0));
+                                g.append('g')
+                                    .call(d3.axisLeft(yAxis).ticks(0));
+                                g.selectAll("myCircles")
+                                    .data(data)
+                                    .join('circle')
+                                    .attr('cx', function(d){return xAxis(+d[a1])})
+                                    .attr('cy', function(d){return yAxis(+d[a2])})
+                                    .attr('r', 0.5)
+                                    .attr('fill', function(d){
+                                        
+                                        return colorScale(d.Gender);
+                                    });
+
+                            }
+                            
+                        }
+                    }
+                })}
+            function generate_corrGraph(){
+            function pearsonCorrelation(x, y) {
+                let n = x.length;
+                let sumX = 0;
+                let sumY = 0;
+                let sumXY = 0;
+                let sumX2 = 0;
+                let sumY2 = 0;
+
+                for (let i = 0; i < n; i++) {
+                    sumX += x[i];
+                    sumY += y[i];
+                    sumXY += x[i] * y[i];
+                    sumX2 += x[i] * x[i];
+                    sumY2 += y[i] * y[i];
+                }
+
+                let numerator = sumXY - (sumX * sumY / n);
+                let denominator = Math.sqrt((sumX2 - (sumX * sumX / n)) * (sumY2 - (sumY * sumY / n)));
+
+                if (denominator === 0) return 0; 
+
+                return numerator / denominator;
+            }
+
+
+            // Graph dimension
+            const margin = {top: 20, right: 20, bottom: 20, left: 20},
+                width = 640 - margin.left - margin.right,
+                height = 640 - margin.top - margin.bottom
+            
+            // Create the svg area
+            const svg = d3.select("#vis-box")
+              .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            
+            d3.text("http://vis.lab.djosix.com:2023/data/abalone.data").then(function(rawData){
+                const header = "Gender,Length,Diameter,Height,WholeWeight,ShuckedWeight,VisceraWeight,ShellWeight,Rings";
+                const dataWithHeader = header + '\n' + rawData;
+                const rows = d3.csvParse(dataWithHeader);
+
+                rows.forEach(item => {
+                    if (item.Gender) {
+                        delete item.Gender;
+                    }
+                });
+
+                // Function to calculate Pearson's correlation coefficient
+                function correlationCoefficient(array1, array2, n) {
+                    let sum_X = 0, sum_Y = 0, sum_XY = 0;
+                    let squareSum_X = 0, squareSum_Y = 0;
+
+                    for (let i = 0; i < n; i++) {
+                        // Sum of elements of arrays.
+                        sum_X += array1[i];
+                        sum_Y += array2[i];
+
+                        // Sum of products of array elements.
+                        sum_XY += array1[i] * array2[i];
+
+                        // Sum of square of array elements.
+                        squareSum_X += array1[i] * array1[i];
+                        squareSum_Y += array2[i] * array2[i];
+                    }
+
+                    // Use formula to calculate the result
+                    let corr = (n * sum_XY - sum_X * sum_Y) / Math.sqrt((n * squareSum_X - sum_X * sum_X) * (n * squareSum_Y - sum_Y * sum_Y));
+                    return corr;
+                }
+
+                let correlationData = [];
+                let attributes = Object.keys(rows[0]); // Get the attributes from the first object
+
+                for (let i = 0; i < attributes.length; i++) {
+                    for (let j = 0; j < attributes.length; j++) {
+                        let attr1 = attributes[i];
+                        let attr2 = attributes[j];
+                        let corrValue = correlationCoefficient(rows.map(row => +row[attr1]), rows.map(row => +row[attr2]), rows.length);
+
+                        correlationData.push({
+                            x: attr1,
+                            y: attr2,
+                            value: corrValue
+                        });
+                    }
+                }
+                const data = correlationData;
+            
+              // List of all variables and number of them
+              const domain = Array.from(new Set(data.map(function(d) { return d.x })))
+              const num = Math.sqrt(data.length)
+            
+              // Create a color scale
+              const color = d3.scaleLinear()
+                .domain([-1, 0, 1])
+                .range(["#B22222", "#fff", "#000080"]);
+            
+              // Create a size scale for bubbles on top right. Watch out: must be a rootscale!
+              const size = d3.scaleSqrt()
+                .domain([0, 1])
+                .range([0, 9]);
+            
+              // X scale
+              const x = d3.scalePoint()
+                .range([0, width])
+                .domain(domain)
+            
+              // Y scale
+              const y = d3.scalePoint()
+                .range([0, height])
+                .domain(domain)
+            
+              // Create one 'g' element for each cell of the correlogram
+              const cor = svg.selectAll(".cor")
+                .data(data)
+                .join("g")
+                  .attr("class", "cor")
+                  .attr("transform", function(d) {
+                    return `translate(${x(d.x)}, ${y(d.y)})`
+                  });
+            
+              // Low left part + Diagonal: Add the text with specific color
+              cor
+                .filter(function(d){
+                  const ypos = domain.indexOf(d.y);
+                  const xpos = domain.indexOf(d.x);
+                  return xpos <= ypos;
+                })
+                .append("text")
+                  .attr("y", 5)
+                  .text(function(d) {
+                    if (d.x === d.y) {
+                      return d.x;
+                    } else {
+                      return d.value.toFixed(2);
+                    }
+                  })
+                  .style("font-size", 10)
+                  .style("text-align", "center")
+                  .style("fill", function(d){
+                    if (d.x === d.y) {
+                      return "#000";
+                    } else {
+                      return color(d.value);
+                    }
+                  });
+            
+            
+              // Up right part: add circles
+              cor
+                .filter(function(d){
+                  const ypos = domain.indexOf(d.y);
+                  const xpos = domain.indexOf(d.x);
+                  return xpos > ypos;
+                })
+                .append("circle")
+                  .attr("r", function(d){ return size(Math.abs(d.value)) })
+                  .style("fill", function(d){
+                    if (d.x === d.y) {
+                      return "#000";
+                    } else {
+                      return color(d.value);
+                    }
+                  })
+                  .style("opacity", 0.8)
+            
+            })
+        }
+            
+            const graphGenerateFunctions = [generate_ScatterPlot, generate_corrGraph];
+            let idx = 1;
+            function switchGraph(){
+                // Remove existing SVG
+                d3.select("#vis-box").select("svg").remove();
+                console.log('click');
+                graphGenerateFunctions[idx]();
+                idx++;
+                idx = idx%2;
+            }    
+            const button = document.getElementById("graph-switch");
+            button.addEventListener("click", switchGraph);
+            generate_ScatterPlot();
+        </script>
+    </body>
+</html>

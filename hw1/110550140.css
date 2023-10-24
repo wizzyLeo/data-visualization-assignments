@@ -1,0 +1,96 @@
+
+*{
+  box-sizing : border-box;
+}
+
+body{
+  font-family: 'Poppins', sans-serif;
+  background-color: rgb(251, 255, 8);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 40px;
+}
+
+button{
+    background-color: rgb(251, 255, 8);
+    border: 2px solid black;
+    transition: all 0.1s ease;
+    margin-top: 100px;
+}
+button:hover{
+    transform: translateY(-3px);
+}
+button:active{
+    transform: translateY(-1px);
+}
+
+.select-container{
+    display : flex;
+    gap: 50px; 
+}
+.custom-select{
+  position: relative;
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 25px;
+}
+.custom-select select{
+    display: block;
+    width: 250px;
+    min-height: 35px;
+    background: rgba(0, 0, 0, 0.0);
+    border: 2px solid black;
+    outline: none;
+    padding: 0 20px 0 10px;
+    cursor: pointer;
+    margin-top: 5px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+  }
+.custom-select::after{
+    content: '';
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent;
+    border-top-color: #222;
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+    bottom: 10%;
+    border-radius: 2px;
+  }
+.custom-select .selector-options{
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    background: rgb(251, 255, 8);
+    border-radius: 1.5px;
+    z-index: 1;
+    width: 100%;
+    position: absolute;
+
+}
+
+.custom-select .selector-options li{
+    height: 35px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    cursor: pointer;
+    border: 2px solid black;
+    border-bottom: 0px;
+    transition: background 0.3s ease;
+}
+.custom-select .selector-options li:last-child{
+    border-bottom: 2px solid black;
+}
+
+.custom-select .selector-options li:hover{
+    background-color: white;
+}

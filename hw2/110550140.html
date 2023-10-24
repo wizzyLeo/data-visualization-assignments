@@ -1,0 +1,59 @@
+<head>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="110550140.js"></script>
+    <link rel="stylesheet" href="110550140.css">
+</head>
+
+<body>
+    <h1>You can reorder the attribute by dragging axes</h1>
+    <div id="example" class="parcoords" style="width:600px;height:500px"></div>
+    <script>
+        // Load the CSV data
+        d3.csv("http://vis.lab.djosix.com:2023/data/iris.csv", function(error, data) {
+            if (error) throw error;
+    
+            // Create a color scale for the classes
+            var colorScale = d3.scale.category10();
+    
+            // Create an array to store the classes
+            var classes = [];
+    
+            // Process the data to exclude the 'class' attribute
+            var processedData = data.map(function(row) {
+                // Store the class in the classes array
+                classes.push(row.class);
+    
+                // Create a new object excluding the 'class' attribute
+                var newRow = {};
+                Object.keys(row).forEach(function(key) {
+                    if (key !== "class") {
+                        newRow[key] = row[key];
+                    }
+                });
+                return newRow;
+            });
+    
+            // Log the processed data
+            console.log(processedData);
+    
+            // Now you can use processedData to create the parallel coordinates chart
+            var pc2 = d3.parcoords()("#example");
+    
+            pc2
+                .data(processedData)
+                .color(function(d, i) {
+                    // Use the index to find the class from the classes array
+                    var originalClass = classes[i];
+    
+                    // Use the color scale to set the color based on the class
+                    return colorScale(originalClass);
+                })
+                .alpha(0.2)
+                .margin({ top: 24, left: 0, bottom: 12, right: 0 })
+                .render()
+                .reorderable();
+        });
+    </script>
+    
+    
+</body>
