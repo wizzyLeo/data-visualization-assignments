@@ -1,0 +1,80 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+text {
+  fill: white;
+}
+
+.info-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.info-box[id$="-1"] {
+  grid-area: info-box-1;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.415);
+}
+.info-box[id$="-2"] {
+  grid-area: info-box-2;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.42);
+}
+.info-box[id$="-3"] {
+  grid-area: info-box-3;
+}
+
+.info-container {
+  height: 95%;
+  width: 95%;
+  background-color: black;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+#dashboard {
+  width: 80%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  min-height: 80%;
+  background: rgb(10, 10, 64);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-areas: "drag-box drag-box drag-box . ." "main main main main info-box-1" "main main main main info-box-2" "main main main main info-box-3";
+  border-radius: 0.5rem;
+  padding: 2rem;
+}
+
+#stream-graph-box {
+  grid-area: main;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#stream-graph-container {
+  width: 95%;
+  height: 95%;
+  margin: auto;
+  border: 1px solid white;
+  border-radius: 1rem;
+  display: grid;
+  place-items: center;
+}
+
+#drag-panel-box {
+  grid-area: drag-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}/*# sourceMappingURL=styles.css.map */
