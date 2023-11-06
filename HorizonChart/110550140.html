@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="110550140.css" />
+    <script src="110550140.js" type="module"></script>
+  </head>
+  <body>
+    <div id="dashboard-container">
+      <div class="item" id="line-container">
+        <h1>Everyday Value</h1>
+        <div class="loading-container">
+          <div class="loading"></div>
+          <h3>loading...</h3>
+        </div>
+      </div>
+      <div class="item" id="horizon-container">
+        <h1>Horizon Chart</h1>
+        <div class="loading-container">
+          <div class="loading"></div>
+          <h3>loading...</h3>
+        </div>
+      </div>
+      <div class="item" id="control-container">
+        <h4 style="display: block;">district or pollutant you are curious about ?...</h4>
+        <div style="display:block;">
+          <select id="district-select"></select>
+          <select id="pollutant-select"></select>
+        </div>
+        
+      </div>
+      <div id="bar-container" class="item">
+        <h1>Compared with Other Districts</h1>
+        <div class="loading-container">
+          <div class="loading"></div>
+          <h3>loading...</h3>
+        </div>
+      </div>
+      <div id="area-container" class="item">
+        <h1>Currently Showing</h1>
+        <h3 id="current-area"></h3>
+        <div class="loading-container">
+          <div class="loading"></div>
+          <h3>loading...</h3>
+        </div>
+    </div>
+  </body>
+</html>
